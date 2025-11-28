@@ -21,6 +21,11 @@ pub enum Commands {
         #[arg(long, value_enum, default_value = "both")]
         r#type: ClientTypeArg,
     },
+    /// Execute an ImageMagick command
+    Magick {
+        /// ImageMagick command arguments (e.g., "test.png -negate out.png")
+        command: String,
+    },
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -80,5 +85,15 @@ pub fn handle_command(command: Commands) {
                 }
             }
         }
+        Commands::Magick { command } => match crate::magick(&command) {
+            Ok(output) => {
+                println!("{}", output);
+                std::process::exit(0);
+            }
+            Err(e) => {
+                eprintln!("Error executing magick command: {}", e);
+                std::process::exit(1);
+            }
+        },
     }
 }
