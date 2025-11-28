@@ -62,7 +62,7 @@ pub fn handle_command(command: Commands) {
         }
         Commands::Install { r#type } => {
             let client_type: crate::ClientType = r#type.into();
-            let config_paths = match crate::ConfigPaths::default() {
+            let config_paths = match crate::ConfigPaths::from_home_dir() {
                 Ok(paths) => paths,
                 Err(e) => {
                     eprintln!("Error getting config paths: {e}");

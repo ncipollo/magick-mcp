@@ -20,7 +20,7 @@ pub struct ConfigPaths {
 
 impl ConfigPaths {
     /// Get default configuration paths based on home directory
-    pub fn default() -> Result<Self, InstallError> {
+    pub fn from_home_dir() -> Result<Self, InstallError> {
         let home_dir = dirs::home_dir().ok_or(InstallError::HomeDirNotFound)?;
 
         Ok(ConfigPaths {
@@ -95,7 +95,7 @@ impl MCPInstaller {
         };
 
         // Ensure mcpServers object exists
-        if !config.get("mcpServers").is_some() {
+        if config.get("mcpServers").is_none() {
             config["mcpServers"] = json!({});
         }
 
