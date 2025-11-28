@@ -13,6 +13,8 @@ pub struct Args {
 pub enum Commands {
     /// Check if ImageMagick is installed
     Check,
+    /// Start the MCP server
+    Mcp,
 }
 
 /// Handle command execution
@@ -20,13 +22,20 @@ pub fn handle_command(command: Commands) {
     match command {
         Commands::Check => match crate::check() {
             Ok(output) => {
-                println!("{}", output);
+                println!("{output}");
                 std::process::exit(0);
             }
             Err(e) => {
-                eprintln!("Error: {}", e);
+                eprintln!("Error: {e}");
                 std::process::exit(1);
             }
         },
+        Commands::Mcp => {
+            let rt = tokio::runtime::Runtime::new().expect("Failed to create tokio runtime");
+            if let Err(e) = rt.block_on(crate::mcp::run_server()) {
+                eprintln!("Error running MCP server: {e}");
+                std::process::exit(1);
+            }
+        }
     }
 }

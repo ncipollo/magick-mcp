@@ -1,5 +1,6 @@
 mod check;
 pub mod cli;
+mod mcp;
 mod shell;
 mod which;
 
