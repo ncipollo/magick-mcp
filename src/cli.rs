@@ -87,11 +87,11 @@ pub fn handle_command(command: Commands) {
         }
         Commands::Magick { command } => match crate::magick(&command) {
             Ok(output) => {
-                println!("{}", output);
+                println!("{output}");
                 std::process::exit(0);
             }
             Err(e) => {
-                eprintln!("Error executing magick command: {}", e);
+                eprintln!("Error executing magick command: {e}");
                 std::process::exit(1);
             }
         },
