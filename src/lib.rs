@@ -1,6 +1,7 @@
 mod check;
 pub mod cli;
 mod install;
+mod magick;
 mod mcp;
 mod shell;
 mod which;
@@ -8,7 +9,8 @@ mod which;
 use check::MagickChecker;
 use install::InstallError;
 use install::MCPInstaller;
-use shell::DefaultCommandRunner;
+use magick::MagickRunner;
+use shell::{DefaultCommandRunner, ShellError};
 use which::DefaultWhichChecker;
 
 pub use install::{ClientType, ConfigPaths};
@@ -25,4 +27,19 @@ pub fn check() -> Result<String, String> {
 pub fn install(client_type: ClientType, config_paths: ConfigPaths) -> Result<(), InstallError> {
     let installer = MCPInstaller::new(client_type, config_paths);
     installer.install()
+}
+
+/// Execute an ImageMagick command
+///
+/// # Arguments
+///
+/// * `command` - A string containing ImageMagick command arguments, e.g., "test.png -negate test_negate.png"
+///
+/// # Returns
+///
+/// Returns the command output as a String, or a ShellError if execution fails
+pub fn magick(command: &str) -> Result<String, ShellError> {
+    let command_runner = DefaultCommandRunner;
+    let runner = MagickRunner::new(&command_runner);
+    runner.execute(command)
 }
