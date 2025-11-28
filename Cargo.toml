@@ -8,5 +8,10 @@ clap = { version = "=4.5.26", features = ["derive"] }
 which = "=7.0.1"
 thiserror = "=2.0.9"
 rmcp = { version = "=0.9.1", features = ["server", "macros", "transport-io"] }
-tokio = { version = "1.48.0", features = ["full"] }
-serde_json = "1.0.145"
+tokio = { version = "=1.48.0", features = ["full"] }
+serde_json = "=1.0.145"
+serde = { version = "=1.0.228", features = ["derive"] }
+dirs = "=6.0.0"
+
+[dev-dependencies]
+tempfile = "=3.23.0"
