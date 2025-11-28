@@ -10,7 +10,7 @@ use check::MagickChecker;
 use install::InstallError;
 use install::MCPInstaller;
 use magick::MagickRunner;
-use shell::{DefaultCommandRunner, ShellError};
+use shell::{CommandRunner, DefaultCommandRunner, ShellError};
 use which::DefaultWhichChecker;
 
 pub use install::{ClientType, ConfigPaths};
@@ -43,4 +43,14 @@ pub fn magick(command: &str, workspace: Option<&std::path::Path>) -> Result<Stri
     let command_runner = DefaultCommandRunner;
     let runner = MagickRunner::new(&command_runner, workspace);
     runner.execute(command)
+}
+
+/// Get ImageMagick help documentation
+///
+/// # Returns
+///
+/// Returns the help output from `magick --help` as a String, or a ShellError if execution fails
+pub fn help() -> Result<String, ShellError> {
+    let command_runner = DefaultCommandRunner;
+    CommandRunner::execute(&command_runner, "magick", &["--help"], None)
 }

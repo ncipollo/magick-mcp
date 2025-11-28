@@ -1,4 +1,5 @@
 pub mod check_tool;
+pub mod help_resource;
 pub mod magick_tool;
 pub mod server;
 
