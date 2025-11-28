@@ -1,11 +1,7 @@
 use clap::Parser;
-
-/// Magick MCP - A Model Context Protocol server
-#[derive(Parser, Debug)]
-#[command(name = "magick-mcp")]
-#[command(version = env!("CARGO_PKG_VERSION"))]
-struct Args {}
+use magick_mcp::cli;
 
 fn main() {
-    let _args = Args::parse();
+    let args = cli::Args::parse();
+    cli::handle_command(args.command);
 }

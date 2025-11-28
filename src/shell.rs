@@ -23,9 +23,13 @@ pub struct DefaultCommandRunner;
 
 impl CommandRunner for DefaultCommandRunner {
     fn execute(&self, command: &str, args: &[&str]) -> Result<String, ShellError> {
-        let output = Command::new(command)
-            .args(args)
-            .env_clear()
+        let path = std::env::var("PATH").ok();
+        let mut cmd = Command::new(command);
+        cmd.args(args).env_clear();
+        if let Some(ref path_val) = path {
+            cmd.env("PATH", path_val);
+        }
+        let output = cmd
             .output()
             .map_err(|e| ShellError::ExecutionFailed(e.to_string()))?;
 

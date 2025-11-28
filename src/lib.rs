@@ -1,4 +1,5 @@
 mod check;
+pub mod cli;
 mod shell;
 mod which;
 
