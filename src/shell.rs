@@ -1,0 +1,38 @@
+use std::process::Command;
+use thiserror::Error;
+
+/// Error type for shell command execution failures
+#[derive(Debug, Error)]
+pub enum ShellError {
+    #[error("Command execution failed: {0}")]
+    ExecutionFailed(String),
+    #[error("Command output is not valid UTF-8")]
+    InvalidUtf8,
+    #[error("Command returned non-zero exit code")]
+    NonZeroExit,
+}
+
+/// Trait for executing shell commands in a mockable way
+pub trait CommandRunner {
+    /// Execute a command with the given arguments and return its output
+    fn execute(&self, command: &str, args: &[&str]) -> Result<String, ShellError>;
+}
+
+/// Default implementation of CommandRunner using std::process::Command
+pub struct DefaultCommandRunner;
+
+impl CommandRunner for DefaultCommandRunner {
+    fn execute(&self, command: &str, args: &[&str]) -> Result<String, ShellError> {
+        let output = Command::new(command)
+            .args(args)
+            .env_clear()
+            .output()
+            .map_err(|e| ShellError::ExecutionFailed(e.to_string()))?;
+
+        if !output.status.success() {
+            return Err(ShellError::NonZeroExit);
+        }
+
+        String::from_utf8(output.stdout).map_err(|_| ShellError::InvalidUtf8)
+    }
+}

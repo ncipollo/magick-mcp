@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 clap = { version = "=4.5.26", features = ["derive"] }
+which = "=7.0.1"
+thiserror = "=2.0.9"
