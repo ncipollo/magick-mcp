@@ -34,12 +34,13 @@ pub fn install(client_type: ClientType, config_paths: ConfigPaths) -> Result<(),
 /// # Arguments
 ///
 /// * `command` - A string containing ImageMagick command arguments, e.g., "test.png -negate test_negate.png"
+/// * `workspace` - Optional workspace path to set as the working directory for the command
 ///
 /// # Returns
 ///
 /// Returns the command output as a String, or a ShellError if execution fails
-pub fn magick(command: &str) -> Result<String, ShellError> {
+pub fn magick(command: &str, workspace: Option<&std::path::Path>) -> Result<String, ShellError> {
     let command_runner = DefaultCommandRunner;
-    let runner = MagickRunner::new(&command_runner);
+    let runner = MagickRunner::new(&command_runner, workspace);
     runner.execute(command)
 }

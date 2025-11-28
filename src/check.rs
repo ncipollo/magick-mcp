@@ -22,7 +22,7 @@ impl<'a> MagickChecker<'a> {
             Ok(_) => {
                 // ImageMagick is installed, get version
                 self.command_runner
-                    .execute("magick", &["--version"])
+                    .execute("magick", &["--version"], None)
                     .map_err(|e| format!("Failed to get ImageMagick version: {e}"))
             }
             Err(_) => {
@@ -81,10 +81,18 @@ mod tests {
     }
 
     impl CommandRunner for MockCommandRunner {
-        fn execute(&self, _command: &str, _args: &[&str]) -> Result<String, ShellError> {
+        fn execute(
+            &self,
+            command: &str,
+            args: &[&str],
+            _working_dir: Option<&std::path::Path>,
+        ) -> Result<String, ShellError> {
             if self.should_fail {
+                let args_str = args.join(" ");
                 Err(ShellError::NonZeroExit {
                     exit_code: 1,
+                    command: command.to_string(),
+                    args: args_str,
                     stdout: String::new(),
                     stderr: "Mock error".to_string(),
                 })

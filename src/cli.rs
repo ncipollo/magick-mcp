@@ -85,7 +85,7 @@ pub fn handle_command(command: Commands) {
                 }
             }
         }
-        Commands::Magick { command } => match crate::magick(&command) {
+        Commands::Magick { command } => match crate::magick(&command, None) {
             Ok(output) => {
                 println!("{output}");
                 std::process::exit(0);

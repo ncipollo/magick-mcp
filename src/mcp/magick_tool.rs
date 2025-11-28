@@ -3,6 +3,7 @@ use rmcp::handler::server::router::tool::ToolRoute;
 use rmcp::handler::server::tool::ToolCallContext;
 use rmcp::model::{CallToolResult, ErrorCode, ErrorData, Tool};
 use serde_json::json;
+use std::path::Path;
 
 /// Execute an ImageMagick command
 ///
@@ -23,7 +24,15 @@ async fn magick_tool(
             data: None,
         })?;
 
-    match crate::magick(command) {
+    // Extract optional workspace parameter from context
+    let workspace = context
+        .arguments
+        .as_ref()
+        .and_then(|args| args.get("workspace"))
+        .and_then(|v| v.as_str())
+        .map(Path::new);
+
+    match crate::magick(command, workspace) {
         Ok(output) => {
             let result = json!({
                 "output": output,
@@ -49,9 +58,13 @@ pub fn magick_tool_route() -> ToolRoute<MagickServerHandler> {
             "command": {
                 "type": "string",
                 "description": "ImageMagick command arguments (e.g., 'test.png -negate out.png')."
+            },
+            "workspace": {
+                "type": "string",
+                "description": "Workspace path to set as the working directory for the command."
             }
         },
-        "required": ["command"]
+        "required": ["command", "workspace"]
     });
     let tool = Tool::new(
         "magick",
