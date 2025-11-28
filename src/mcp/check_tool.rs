@@ -1,11 +1,8 @@
+use crate::mcp::server::MagickServerHandler;
 use rmcp::handler::server::router::tool::ToolRoute;
 use rmcp::handler::server::tool::ToolCallContext;
-use rmcp::model::ErrorData;
-use rmcp::model::{CallToolResult, Tool};
-use serde_json::{Map, json};
-use std::sync::Arc;
-
-use crate::mcp::server::MagickServerHandler;
+use rmcp::model::{CallToolResult, ErrorData, Tool};
+use serde_json::json;
 
 /// Check if ImageMagick is installed and return version or installation instructions
 async fn check_tool(
@@ -28,11 +25,17 @@ async fn check_tool(
     }
 }
 
+/// Create the check tool route
 pub fn check_tool_route() -> ToolRoute<MagickServerHandler> {
+    let input_schema: serde_json::Value = json!({
+        "type": "object",
+        "properties": {},
+        "required": []
+    });
     let tool = Tool::new(
         "check",
         "Check if ImageMagick is installed and return version or installation instructions",
-        Arc::new(Map::new()),
+        input_schema.as_object().unwrap().clone(),
     );
     ToolRoute::new_dyn(tool, |context| Box::pin(check_tool(context)))
 }
