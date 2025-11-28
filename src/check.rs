@@ -83,7 +83,11 @@ mod tests {
     impl CommandRunner for MockCommandRunner {
         fn execute(&self, _command: &str, _args: &[&str]) -> Result<String, ShellError> {
             if self.should_fail {
-                Err(ShellError::NonZeroExit)
+                Err(ShellError::NonZeroExit {
+                    exit_code: 1,
+                    stdout: String::new(),
+                    stderr: "Mock error".to_string(),
+                })
             } else {
                 Ok(self.output.clone())
             }

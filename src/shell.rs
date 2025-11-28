@@ -8,8 +8,14 @@ pub enum ShellError {
     ExecutionFailed(String),
     #[error("Command output is not valid UTF-8")]
     InvalidUtf8,
-    #[error("Command returned non-zero exit code")]
-    NonZeroExit,
+    #[error(
+        "Command returned non-zero exit code (exit code: {exit_code})\nstdout: {stdout}\nstderr: {stderr}"
+    )]
+    NonZeroExit {
+        exit_code: i32,
+        stdout: String,
+        stderr: String,
+    },
 }
 
 /// Trait for executing shell commands in a mockable way
@@ -34,7 +40,14 @@ impl CommandRunner for DefaultCommandRunner {
             .map_err(|e| ShellError::ExecutionFailed(e.to_string()))?;
 
         if !output.status.success() {
-            return Err(ShellError::NonZeroExit);
+            let exit_code = output.status.code().unwrap_or(-1);
+            let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+            let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+            return Err(ShellError::NonZeroExit {
+                exit_code,
+                stdout,
+                stderr,
+            });
         }
 
         String::from_utf8(output.stdout).map_err(|_| ShellError::InvalidUtf8)

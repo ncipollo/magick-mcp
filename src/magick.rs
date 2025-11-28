@@ -56,7 +56,11 @@ mod tests {
             *self.captured_args.borrow_mut() = args.iter().map(|s| s.to_string()).collect();
 
             if self.should_fail {
-                Err(ShellError::NonZeroExit)
+                Err(ShellError::NonZeroExit {
+                    exit_code: 1,
+                    stdout: String::new(),
+                    stderr: "Mock error".to_string(),
+                })
             } else {
                 Ok(self.output.clone())
             }
