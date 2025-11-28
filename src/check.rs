@@ -23,7 +23,7 @@ impl<'a> MagickChecker<'a> {
                 // ImageMagick is installed, get version
                 self.command_runner
                     .execute("magick", &["--version"])
-                    .map_err(|e| format!("Failed to get ImageMagick version: {}", e))
+                    .map_err(|e| format!("Failed to get ImageMagick version: {e}"))
             }
             Err(_) => {
                 // ImageMagick is not installed, return platform-specific instructions
@@ -47,8 +47,7 @@ impl<'a> MagickChecker<'a> {
         };
 
         format!(
-            "ImageMagick is not installed.\n\n{}\n\nFor more details, visit: https://imagemagick.org/script/download.php",
-            instructions
+            "ImageMagick is not installed.\n\n{instructions}\n\nFor more details, visit: https://imagemagick.org/script/download.php"
         )
     }
 }
