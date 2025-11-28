@@ -48,14 +48,14 @@ pub fn magick_tool_route() -> ToolRoute<MagickServerHandler> {
         "properties": {
             "command": {
                 "type": "string",
-                "description": "ImageMagick command arguments (e.g., 'test.png -negate out.png'). Do not include 'magick' prefix or subcommands like 'convert', 'identify', etc."
+                "description": "ImageMagick command arguments (e.g., 'test.png -negate out.png')."
             }
         },
         "required": ["command"]
     });
     let tool = Tool::new(
         "magick",
-        "Execute an ImageMagick command. The provided text should be an ImageMagick command (don't include 'magick'). It should not contain subcommands like 'convert', 'identify', etc.",
+        "Execute an ImageMagick command. The provided text should be an ImageMagick command (don't include 'magick').",
         input_schema.as_object().unwrap().clone(),
     );
     ToolRoute::new_dyn(tool, |context| Box::pin(magick_tool(context)))
