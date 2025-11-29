@@ -24,6 +24,6 @@ pub fn help_resource() -> Resource {
 /// # Returns
 ///
 /// Returns the help text from `magick --help`, or an error if execution fails
-pub fn read_help_resource() -> Result<String, crate::shell::ShellError> {
+pub fn read_help_resource() -> Result<String, crate::feature::ShellError> {
     crate::help()
 }

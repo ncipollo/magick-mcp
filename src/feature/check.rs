@@ -1,5 +1,5 @@
-use crate::shell::CommandRunner;
-use crate::which::WhichChecker;
+use crate::feature::shell::CommandRunner;
+use crate::feature::which::WhichChecker;
 
 /// Checker for ImageMagick installation
 pub struct MagickChecker<'a> {
@@ -55,8 +55,8 @@ impl<'a> MagickChecker<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::shell::{CommandRunner, ShellError};
-    use crate::which::{WhichChecker, WhichError};
+    use crate::feature::shell::{CommandRunner, ShellError};
+    use crate::feature::which::{WhichChecker, WhichError};
     use std::path::PathBuf;
 
     /// Mock implementation of WhichChecker for testing

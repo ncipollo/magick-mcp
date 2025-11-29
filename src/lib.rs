@@ -1,19 +1,14 @@
-mod check;
 pub mod cli;
-mod install;
-mod magick;
+mod feature;
 mod mcp;
-mod shell;
-mod which;
 
-use check::MagickChecker;
-use install::InstallError;
-use install::MCPInstaller;
-use magick::MagickRunner;
-use shell::{CommandRunner, DefaultCommandRunner, ShellError};
-use which::DefaultWhichChecker;
+use feature::DefaultWhichChecker;
+use feature::InstallError;
+use feature::MCPInstaller;
+use feature::MagickChecker;
+use feature::{CommandRunner, DefaultCommandRunner, ShellError};
 
-pub use install::{ClientType, ConfigPaths};
+pub use feature::{ClientType, ConfigPaths};
 
 /// Check if ImageMagick is installed and return version or installation instructions
 pub fn check() -> Result<String, String> {
@@ -41,7 +36,7 @@ pub fn install(client_type: ClientType, config_paths: ConfigPaths) -> Result<(),
 /// Returns the command output as a String, or a ShellError if execution fails
 pub fn magick(command: &str, workspace: Option<&std::path::Path>) -> Result<String, ShellError> {
     let command_runner = DefaultCommandRunner;
-    let runner = MagickRunner::new(&command_runner, workspace);
+    let runner = feature::MagickRunner::new(&command_runner, workspace);
     runner.execute(command)
 }
 

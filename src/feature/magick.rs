@@ -1,4 +1,4 @@
-use crate::shell::{CommandRunner, ShellError};
+use crate::feature::shell::{CommandRunner, ShellError};
 use std::path::Path;
 
 /// Runner for executing ImageMagick commands
@@ -39,7 +39,7 @@ impl<'a> MagickRunner<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::shell::{CommandRunner, ShellError};
+    use crate::feature::shell::{CommandRunner, ShellError};
 
     /// Mock implementation of CommandRunner for testing
     pub struct MockCommandRunner {
