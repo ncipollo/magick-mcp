@@ -7,6 +7,7 @@ use feature::InstallError;
 use feature::MCPInstaller;
 use feature::MagickChecker;
 use feature::{CommandRunner, DefaultCommandRunner, ShellError};
+use feature::{Function, FunctionRunner, FunctionStore, FunctionStoreError};
 
 pub use feature::{ClientType, ConfigPaths};
 
@@ -48,4 +49,75 @@ pub fn magick(command: &str, workspace: Option<&std::path::Path>) -> Result<Stri
 pub fn help() -> Result<String, ShellError> {
     let command_runner = DefaultCommandRunner;
     CommandRunner::execute(&command_runner, "magick", &["--help"], None)
+}
+
+/// Save a magick function to disk
+///
+/// # Arguments
+///
+/// * `function` - The function to save
+///
+/// # Returns
+///
+/// Returns `Ok(())` on success, or a `FunctionStoreError` on failure
+pub fn save_function(function: Function) -> Result<(), FunctionStoreError> {
+    let store = FunctionStore::new();
+    store.save(&function)
+}
+
+/// Load a magick function from disk
+///
+/// # Arguments
+///
+/// * `name` - The name of the function to load
+///
+/// # Returns
+///
+/// Returns the `Function` on success, or a `FunctionStoreError` on failure
+pub fn load_function(name: &str) -> Result<Function, FunctionStoreError> {
+    let store = FunctionStore::new();
+    store.load(name)
+}
+
+/// List all available magick function names
+///
+/// # Returns
+///
+/// Returns a vector of function names, or a `FunctionStoreError` on failure
+pub fn list_functions() -> Result<Vec<String>, FunctionStoreError> {
+    let store = FunctionStore::new();
+    store.list()
+}
+
+/// Delete a magick function from disk
+///
+/// # Arguments
+///
+/// * `name` - The name of the function to delete
+///
+/// # Returns
+///
+/// Returns `Ok(())` on success, or a `FunctionStoreError` on failure
+pub fn delete_function(name: &str) -> Result<(), FunctionStoreError> {
+    let store = FunctionStore::new();
+    store.delete(name)
+}
+
+/// Execute a magick function (run all commands in sequence)
+///
+/// # Arguments
+///
+/// * `function` - The function containing commands to execute
+/// * `workspace` - Optional workspace path to set as the working directory for commands
+///
+/// # Returns
+///
+/// Returns a vector of command outputs, or the first `ShellError` encountered
+pub fn run_function(
+    function: &Function,
+    workspace: Option<&std::path::Path>,
+) -> Result<Vec<String>, ShellError> {
+    let command_runner = DefaultCommandRunner;
+    let runner = FunctionRunner::new(&command_runner, workspace);
+    runner.run(function)
 }
