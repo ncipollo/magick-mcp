@@ -2,6 +2,9 @@
 name = "magick-mcp"
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/nickcipollo/magick-mcp"
 
 [dependencies]
 clap = { version = "=4.5.26", features = ["derive"] }
