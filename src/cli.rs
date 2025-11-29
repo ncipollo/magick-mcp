@@ -151,7 +151,7 @@ fn handle_func_command(func_command: FuncCommands) {
                 println!("Name: {}", function.name);
                 println!("Commands:");
                 for command in &function.commands {
-                    println!("  - {}", command);
+                    println!("  - {command}");
                 }
                 std::process::exit(0);
             }

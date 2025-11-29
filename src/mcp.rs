@@ -1,9 +1,15 @@
 pub mod check_tool;
+pub mod func_execute_tool;
+pub mod func_list_tool;
+pub mod func_save_tool;
 pub mod help_resource;
 pub mod magick_tool;
 pub mod server;
 
 use crate::mcp::check_tool::check_tool_route;
+use crate::mcp::func_execute_tool::func_execute_tool_route;
+use crate::mcp::func_list_tool::func_list_tool_route;
+use crate::mcp::func_save_tool::func_save_tool_route;
 use crate::mcp::magick_tool::magick_tool_route;
 use rmcp::handler::server::router::Router;
 use rmcp::service::ServiceExt;
@@ -15,7 +21,10 @@ pub async fn run_server() -> Result<(), Box<dyn std::error::Error>> {
     let handler = MagickServerHandler;
     let router = Router::new(handler)
         .with_tool(check_tool_route())
-        .with_tool(magick_tool_route());
+        .with_tool(magick_tool_route())
+        .with_tool(func_list_tool_route())
+        .with_tool(func_save_tool_route())
+        .with_tool(func_execute_tool_route());
 
     // Create stdio transport
     let (stdin, stdout) = stdio();
