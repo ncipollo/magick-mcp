@@ -36,7 +36,8 @@ alwaysApply: true
 - Use integration tests for testing across module boundaries
 - Follow the Arrange-Act-Assert pattern in tests
 
-## Lib vs Main
+## Project Structure
 
 - We should always create top level functions which are exposed in lib.rs and then leverage them within main. 
 - The primary responsibility within main is integrating with the CLI system.
+- When implementing a new feature, we create one or more modules within feature/. We should then expose a single public function in lib.rs which initializes the struct(s) from the feature and calls them, returning their result.
