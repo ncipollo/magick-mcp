@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand, ValueEnum};
+use std::path::PathBuf;
 
 /// Magick MCP - A Model Context Protocol server
 #[derive(Parser, Debug)]
@@ -25,6 +26,33 @@ pub enum Commands {
     Magick {
         /// ImageMagick command arguments (e.g., "test.png -negate out.png")
         command: String,
+    },
+    /// Manage magick functions
+    Func {
+        #[command(subcommand)]
+        func_command: FuncCommands,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum FuncCommands {
+    /// List all available functions
+    List,
+    /// Print a function in human-readable format
+    Print {
+        /// Name of the function to print
+        name: String,
+    },
+    /// Execute a function by name
+    Execute {
+        /// Name of the function to execute
+        name: String,
+    },
+    /// Save a function from a JSON file
+    Save {
+        /// Path to the JSON file containing the function
+        #[arg(long)]
+        file: PathBuf,
     },
 }
 
@@ -95,5 +123,89 @@ pub fn handle_command(command: Commands) {
                 std::process::exit(1);
             }
         },
+        Commands::Func { func_command } => handle_func_command(func_command),
+    }
+}
+
+/// Handle function subcommand execution
+fn handle_func_command(func_command: FuncCommands) {
+    match func_command {
+        FuncCommands::List => match crate::list_functions() {
+            Ok(functions) => {
+                if functions.is_empty() {
+                    println!("No functions found");
+                } else {
+                    for name in functions {
+                        println!("{name}");
+                    }
+                }
+                std::process::exit(0);
+            }
+            Err(e) => {
+                eprintln!("Error listing functions: {e}");
+                std::process::exit(1);
+            }
+        },
+        FuncCommands::Print { name } => match crate::load_function(&name) {
+            Ok(function) => {
+                println!("Name: {}", function.name);
+                println!("Commands:");
+                for command in &function.commands {
+                    println!("  - {}", command);
+                }
+                std::process::exit(0);
+            }
+            Err(e) => {
+                eprintln!("Error loading function '{name}': {e}");
+                std::process::exit(1);
+            }
+        },
+        FuncCommands::Execute { name } => {
+            let function = match crate::load_function(&name) {
+                Ok(f) => f,
+                Err(e) => {
+                    eprintln!("Error loading function '{name}': {e}");
+                    std::process::exit(1);
+                }
+            };
+            match crate::run_function(&function, None) {
+                Ok(outputs) => {
+                    for output in outputs {
+                        println!("{output}");
+                    }
+                    std::process::exit(0);
+                }
+                Err(e) => {
+                    eprintln!("Error executing function '{name}': {e}");
+                    std::process::exit(1);
+                }
+            }
+        }
+        FuncCommands::Save { file } => {
+            let contents = match std::fs::read_to_string(&file) {
+                Ok(c) => c,
+                Err(e) => {
+                    eprintln!("Error reading file '{}': {e}", file.display());
+                    std::process::exit(1);
+                }
+            };
+            let function: crate::Function = match serde_json::from_str(&contents) {
+                Ok(f) => f,
+                Err(e) => {
+                    eprintln!("Error parsing JSON from '{}': {e}", file.display());
+                    std::process::exit(1);
+                }
+            };
+            match crate::save_function(function) {
+                Ok(_) => {
+                    println!("Function saved successfully");
+                    std::process::exit(0);
+                }
+                Err(e) => {
+                    eprintln!("Error saving function: {e}");
+                    std::process::exit(1);
+                }
+            }
+        }
     }
 }
