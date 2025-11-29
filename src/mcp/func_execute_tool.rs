@@ -79,14 +79,14 @@ pub fn func_execute_tool_route() -> ToolRoute<MagickServerHandler> {
             },
             "workspace": {
                 "type": "string",
-                "description": "Optional workspace path to set as the working directory for commands"
+                "description": "Workspace path to set as the working directory for commands"
             },
             "input": {
                 "type": "string",
                 "description": "Optional input value to replace $input placeholders in commands"
             }
         },
-        "required": ["name"]
+        "required": ["name", "workspace"]
     });
     let tool = Tool::new(
         "func_execute",

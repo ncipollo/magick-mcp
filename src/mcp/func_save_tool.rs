@@ -87,7 +87,7 @@ pub fn func_save_tool_route() -> ToolRoute<MagickServerHandler> {
                 "items": {
                     "type": "string"
                 },
-                "description": "Array of ImageMagick command strings to execute in sequence"
+                "description": "Array of ImageMagick command strings to execute in sequence. Important: Use $input to represent the input file, this will be replaced during execution. You can also use $input for output and intermediate file names."
             }
         },
         "required": ["name", "commands"]
