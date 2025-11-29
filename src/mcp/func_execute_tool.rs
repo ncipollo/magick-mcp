@@ -29,6 +29,13 @@ async fn func_execute_tool(
         .and_then(|v| v.as_str())
         .map(Path::new);
 
+    // Extract optional input parameter from context
+    let input = context
+        .arguments
+        .as_ref()
+        .and_then(|args| args.get("input"))
+        .and_then(|v| v.as_str());
+
     // Load the function
     let function = match crate::load_function(name) {
         Ok(f) => f,
@@ -42,7 +49,7 @@ async fn func_execute_tool(
     };
 
     // Execute the function
-    match crate::run_function(&function, workspace) {
+    match crate::run_function(&function, workspace, input) {
         Ok(outputs) => {
             let result = json!({
                 "outputs": outputs,
@@ -73,6 +80,10 @@ pub fn func_execute_tool_route() -> ToolRoute<MagickServerHandler> {
             "workspace": {
                 "type": "string",
                 "description": "Optional workspace path to set as the working directory for commands"
+            },
+            "input": {
+                "type": "string",
+                "description": "Optional input value to replace $input placeholders in commands"
             }
         },
         "required": ["name"]

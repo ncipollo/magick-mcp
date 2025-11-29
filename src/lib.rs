@@ -109,15 +109,21 @@ pub fn delete_function(name: &str) -> Result<(), FunctionStoreError> {
 ///
 /// * `function` - The function containing commands to execute
 /// * `workspace` - Optional workspace path to set as the working directory for commands
+/// * `input` - Optional input value to replace `$input` placeholders in commands
 ///
 /// # Returns
 ///
 /// Returns a vector of command outputs, or the first `ShellError` encountered
+///
+/// # Errors
+///
+/// Returns `ShellError::MissingInputVariable` if a command contains `$input` but no input was provided
 pub fn run_function(
     function: &Function,
     workspace: Option<&std::path::Path>,
+    input: Option<&str>,
 ) -> Result<Vec<String>, ShellError> {
     let command_runner = DefaultCommandRunner;
     let runner = FunctionRunner::new(&command_runner, workspace);
-    runner.run(function)
+    runner.run(function, input)
 }

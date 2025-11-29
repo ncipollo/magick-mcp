@@ -47,6 +47,9 @@ pub enum FuncCommands {
     Execute {
         /// Name of the function to execute
         name: String,
+        /// Input value to replace $input placeholders in commands
+        #[arg(long)]
+        input: Option<String>,
     },
     /// Save a function from a JSON file
     Save {
@@ -160,7 +163,7 @@ fn handle_func_command(func_command: FuncCommands) {
                 std::process::exit(1);
             }
         },
-        FuncCommands::Execute { name } => {
+        FuncCommands::Execute { name, input } => {
             let function = match crate::load_function(&name) {
                 Ok(f) => f,
                 Err(e) => {
@@ -168,7 +171,8 @@ fn handle_func_command(func_command: FuncCommands) {
                     std::process::exit(1);
                 }
             };
-            match crate::run_function(&function, None) {
+            let input_ref = input.as_deref();
+            match crate::run_function(&function, None, input_ref) {
                 Ok(outputs) => {
                     for output in outputs {
                         println!("{output}");

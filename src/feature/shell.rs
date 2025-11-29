@@ -22,6 +22,8 @@ pub enum ShellError {
         stdout: String,
         stderr: String,
     },
+    #[error("Missing required input variable: command contains $input but no input was provided")]
+    MissingInputVariable,
 }
 
 /// Trait for executing shell commands in a mockable way
