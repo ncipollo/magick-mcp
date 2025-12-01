@@ -2,6 +2,12 @@
 
 A MCP server which facilitates usage of  [ImageMagick](https://imagemagick.org/)
 
+# Installation
+
+```bash
+cargo install magick-mcp
+```
+
 # Tools
 
 This MCP sever supports the following tools:

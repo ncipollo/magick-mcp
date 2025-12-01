@@ -1,5 +1,6 @@
 [package]
 name = "magick-mcp"
+description = " A MCP server which facilitates usage of ImageMagick."
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
