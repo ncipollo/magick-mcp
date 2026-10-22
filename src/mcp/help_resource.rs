@@ -14,6 +14,7 @@ pub fn help_resource() -> Resource {
             mime_type: Some("text/plain".to_string()),
             size: None,
             icons: None,
+            meta: None,
         },
         None,
     )
